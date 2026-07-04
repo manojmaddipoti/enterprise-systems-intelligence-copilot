@@ -1,0 +1,21 @@
+name: enterprise_systems_intelligence
+tables:
+  - name: invoices
+    base_table:
+      database: ENTERPRISE_COPILOT_DEV
+      schema: MARTS
+      table: MART_INVOICE_EXCEPTIONS
+    dimensions:
+      - name: supplier_name
+        expr: supplier_name
+      - name: business_unit
+        expr: business_unit
+      - name: exception_type
+        expr: exception_type
+    measures:
+      - name: blocked_invoice_amount
+        expr: open_amount
+        default_aggregation: sum
+      - name: exception_count
+        expr: exception_id
+        default_aggregation: count
