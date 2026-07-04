@@ -1,0 +1,44 @@
+logical_tables:
+  suppliers:
+    table: MART_SUPPLIER_360
+  purchase_orders:
+    table: MART_PROCUREMENT_SPEND
+  invoices:
+    table: MART_INVOICE_EXCEPTIONS
+  approvals:
+    table: MART_APPROVAL_BOTTLENECKS
+  receipts:
+    table: MART_PO_INVOICE_MATCHING
+  payments:
+    table: MART_PAYMENT_STATUS
+  exceptions:
+    table: MART_INVOICE_EXCEPTIONS
+  workflow_health:
+    table: MART_ENTERPRISE_WORKFLOW_HEALTH
+relationships:
+  - supplier -> purchase_order
+  - purchase_order -> invoice
+  - purchase_order -> receipt
+  - invoice -> payment
+  - invoice -> exception
+  - purchase_order -> approval
+measures:
+  - total_spend
+  - open_invoice_amount
+  - overdue_invoice_amount
+  - blocked_invoice_amount
+  - avg_approval_cycle_time
+  - exception_count
+  - match_rate
+  - blocked_invoice_count
+  - workflow_health_score
+dimensions:
+  - supplier_name
+  - business_unit
+  - region
+  - commodity
+  - invoice_status
+  - approval_status
+  - exception_reason
+  - exception_type
+  - supplier_tier

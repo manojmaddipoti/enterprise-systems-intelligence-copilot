@@ -1,0 +1,2 @@
+{"id":"policy_001","input":"When is three-way matching required?","expected_intent":"policy_lookup","expected_tools":["search_policy_documents"],"must_contain":["three-way","policy"],"must_not_contain":["unsupported"]}
+{"id":"policy_002","input":"What approval level is needed for a $75,000 software purchase?","expected_intent":"policy_lookup","expected_tools":["search_policy_documents"],"must_contain":["approval"],"must_not_contain":["tax_id"]}

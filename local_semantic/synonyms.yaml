@@ -1,0 +1,21 @@
+synonyms:
+  supplier:
+    - vendor
+    - provider
+  invoice:
+    - bill
+    - AP invoice
+  purchase_order:
+    - PO
+    - order
+  exception:
+    - hold
+    - blocked invoice
+    - issue
+  approval_cycle_time:
+    - approval delay
+    - bottleneck
+    - pending time
+  open_invoice_amount:
+    - unpaid amount
+    - outstanding balance
