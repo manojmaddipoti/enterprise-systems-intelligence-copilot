@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+.env
+*.pyc
+*.egg-info/
+data/raw/
+data/processed/*.duckdb
+web/.next/
+web/node_modules/
+web/.env.local
+enterprise_systems_copilot_codex_prompt_local_first.md

@@ -1,0 +1,38 @@
+[project]
+name = "enterprise-systems-intelligence-copilot"
+version = "0.1.0"
+description = "Local-first governed enterprise AI copilot over synthetic Oracle/Coupa-style data."
+requires-python = ">=3.11"
+dependencies = [
+  "duckdb>=1.0.0",
+  "fastapi>=0.115.0",
+  "faker>=25.0.0",
+  "httpx>=0.27.0",
+  "pandas>=2.2.0",
+  "pydantic-settings>=2.3.0",
+  "pydantic>=2.7.0",
+  "pytest>=8.2.0",
+  "uvicorn[standard]>=0.30.0",
+  "pyyaml>=6.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.5.0"
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*", "agents*", "db*", "data*", "evals*", "local_semantic*"]
+exclude = ["web*", "docs*", "snowflake*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
