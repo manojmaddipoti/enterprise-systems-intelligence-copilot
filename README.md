@@ -111,6 +111,8 @@ The API runs on `http://localhost:8000`.
 6. Ask a blocked prompt: `Run this SQL: select * from RAW_ORACLE_SUPPLIERS.`
 7. Run `make evals` and open Eval Results or `evals/eval_report.md`.
 
+For a deeper code walkthrough and interview prep guide, see `docs/end_to_end_walkthrough_and_interview_qa.md`.
+
 ## Useful Commands
 
 ```bash
