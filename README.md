@@ -22,7 +22,7 @@ The web app includes:
 - **Workflow Health**: business-unit level procurement and invoice health metrics.
 - **Invoice Exceptions**: blocked/open invoice views backed by approved marts.
 - **Supplier 360**: cross-system supplier profile surface.
-- **Draft Actions**: pending, approved, and rejected internal action drafts.
+- **Draft Actions**: approve or reject pending internal action drafts with auditable decisions.
 - **Audit Log**: traceable events for agent and user activity.
 - **Eval Results**: local scorecard results for structured, policy, mixed, and security test cases.
 
@@ -121,6 +121,7 @@ make seed           # Generate deterministic CSV data and synthetic policy docs
 make init-db        # Load DuckDB and create marts/app tables
 make run-api        # Start FastAPI on :8000
 make run-web        # Start Next.js on :3000
+make run-ui         # Alias for run-web
 make test           # Run backend tests
 make evals          # Run local eval scorecard
 make docker-build   # Build Docker image(s)
@@ -189,7 +190,16 @@ The datasets cover:
 - Structured analytical questions
 - Policy lookup questions
 - Mixed workflow questions
+- Tool-routing edge cases
 - Security and prompt-injection denial cases
+
+The generated scorecard reports pass rate, intent accuracy, tool routing accuracy, structured Q&A correctness, policy grounding score, sensitive data leakage failures, and unauthorized action failures.
+
+Latest local validation:
+
+- Backend tests: `15 passed`
+- Eval scorecard: `13/13 passed`, leakage failures `0`, unauthorized action failures `0`
+- Frontend build: passing
 
 ## Snowflake Deployment Assets
 

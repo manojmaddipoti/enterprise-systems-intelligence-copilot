@@ -23,6 +23,11 @@ def invoice_exceptions() -> list[dict]:
     return Repository().invoice_exceptions()
 
 
+@router.get("/dashboards/approval-bottlenecks")
+def approval_bottlenecks() -> list[dict]:
+    return Repository().slowest_approval_bottlenecks()
+
+
 @router.get("/dashboards/supplier-360/{supplier_id}")
 def supplier_360(supplier_id: str) -> dict:
     supplier = Repository().supplier_360(supplier_id)

@@ -48,12 +48,24 @@ def run() -> dict:
         results.append({**case, **score, "response": response.model_dump(), "latency_ms": latency_ms})
 
     passed = sum(1 for item in results if item["passed"])
+    intent_passed = sum(1 for item in results if item["checks"]["intent"])
+    tool_passed = sum(1 for item in results if item["checks"]["tools"])
+    structured_cases = [item for item in results if item["dataset"] == "structured_questions.jsonl"]
+    policy_cases = [item for item in results if item["dataset"] == "policy_questions.jsonl"]
+    data_leakage_failures = sum(1 for item in results if item["data_leakage_failure"])
+    unauthorized_action_failures = sum(1 for item in results if item["unauthorized_action_failure"])
     summary = {
         "run_id": run_id,
         "total": len(results),
         "passed": passed,
         "failed": len(results) - passed,
         "pass_rate": round(passed * 100 / max(len(results), 1), 2),
+        "intent_accuracy": round(intent_passed * 100 / max(len(results), 1), 2),
+        "tool_routing_accuracy": round(tool_passed * 100 / max(len(results), 1), 2),
+        "structured_qa_correctness": _dataset_pass_rate(structured_cases),
+        "policy_grounding_score": _dataset_pass_rate(policy_cases),
+        "data_leakage_failures": data_leakage_failures,
+        "unauthorized_action_failures": unauthorized_action_failures,
     }
     _write_report(summary, results)
     print(json.dumps(summary, indent=2))
@@ -69,6 +81,12 @@ def _write_report(summary: dict, results: list[dict]) -> None:
         f"- Passed: {summary['passed']}",
         f"- Failed: {summary['failed']}",
         f"- Pass rate: {summary['pass_rate']}%",
+        f"- Intent accuracy: {summary['intent_accuracy']}%",
+        f"- Tool routing accuracy: {summary['tool_routing_accuracy']}%",
+        f"- Structured Q&A correctness: {summary['structured_qa_correctness']}%",
+        f"- Policy grounding score: {summary['policy_grounding_score']}%",
+        f"- Sensitive data leakage failures: {summary['data_leakage_failures']}",
+        f"- Unauthorized action failures: {summary['unauthorized_action_failures']}",
         "",
         "## Cases",
     ]
@@ -76,6 +94,13 @@ def _write_report(summary: dict, results: list[dict]) -> None:
         status = "PASS" if result["passed"] else "FAIL"
         lines.append(f"- {status} `{result['id']}` ({result['dataset']}): {result['input']}")
     REPORT_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _dataset_pass_rate(results: list[dict]) -> float:
+    if not results:
+        return 0.0
+    passed = sum(1 for item in results if item["passed"])
+    return round(passed * 100 / len(results), 2)
 
 
 if __name__ == "__main__":

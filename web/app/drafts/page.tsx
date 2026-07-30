@@ -1,4 +1,4 @@
-import { DataTable } from '@/components/DataTable';
+import { DraftActionsTable } from '@/components/DraftActionsTable';
 import { apiGet } from '@/lib/api';
 
 export default async function DraftsPage() {
@@ -12,7 +12,7 @@ export default async function DraftsPage() {
           <p>Internal draft actions stay pending until approved by manager or admin roles.</p>
         </div>
       </header>
-      <DataTable rows={rows} />
+      <DraftActionsTable rows={rows} />
     </>
   );
 }

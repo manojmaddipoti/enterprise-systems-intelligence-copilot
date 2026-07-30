@@ -18,3 +18,7 @@ def test_no_receipt_percentage() -> None:
     result = Repository().no_receipt_percentage()
     assert result["total_invoices"] > 0
     assert 0 <= result["percentage"] <= 100
+
+
+def test_app_user_roles_table_exists() -> None:
+    assert Repository().user_role_count() > 0

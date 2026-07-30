@@ -1,7 +1,12 @@
 INTENT_PATTERNS = {
+    "mixed_data_policy": ["blocked invoices violate", "three-way match policy"],
     "query_invoice_exceptions": ["blocked invoice", "highest blocked", "exception patterns"],
     "query_approval_bottlenecks": ["slowest approval", "approval cycle", "bottleneck"],
-    "query_po_invoice_matching": ["no matching receipt", "missing matching oracle invoices"],
+    "query_po_invoice_matching": [
+        "no matching receipt",
+        "missing matching oracle invoices",
+        "approved in coupa",
+    ],
     "search_policy_documents": ["policy", "three-way", "approval level"],
     "create_draft_action": ["draft", "escalation"],
     "deny": ["run sql", "bank account", "pretend i am an admin"],
