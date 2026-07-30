@@ -1,14 +1,14 @@
 # Enterprise Systems Intelligence Copilot
 
-A local-first, governed AI copilot for enterprise operations teams. The project simulates an Oracle ERP plus Coupa procurement environment, then exposes a controlled chat and dashboard experience for answering cross-system questions, finding workflow risk, drafting internal follow-ups, and proving that agent actions are auditable and permission-aware.
+A local-first, governed enterprise operations copilot over synthetic Oracle ERP and Coupa workflows. It combines cross-system analytics, policy retrieval, sensitive-data masking, human approval controls, audit trails, deterministic evaluations, and a FastAPI/Next.js interface.
 
-This is designed as a portfolio/interview project: it demonstrates agent orchestration, semantic routing, data modeling, RBAC, sensitive-field masking, audit trails, evals, and an optional Snowflake deployment path without depending on proprietary workplace data or cloud infrastructure.
+This portfolio project demonstrates deterministic agent orchestration, semantic routing, data modeling, role-based control patterns, sensitive-field masking, audit trails, evaluations, and an optional Snowflake deployment path without depending on proprietary workplace data or cloud infrastructure.
 
 ## What This Project Shows
 
 - **Enterprise analytics over messy systems**: synthetic Oracle AP/PO data and Coupa supplier, requisition, PO, receipt, invoice, and approval data are joined into governed marts.
 - **Governed agent behavior**: the copilot cannot run arbitrary SQL, expose raw sensitive fields, or accept role escalation from prompt text.
-- **Role-aware answers**: analysts, managers, admins, and auditors see different capabilities based on backend authorization rules.
+- **Role-aware controls**: simulated analysts, managers, admins, and auditors exercise different backend-enforced capabilities.
 - **Action drafting with approvals**: the agent can draft an internal escalation note, but manager/admin approval is required before the draft is considered approved.
 - **Traceable operations**: chat turns, tool calls, denials, drafts, feedback, and eval runs are written to an audit log.
 - **Deterministic local runtime**: the default path runs on a laptop with FastAPI, DuckDB, and Next.js. No LLM API key is required for the demo.
@@ -66,7 +66,7 @@ The default implementation uses rules-based intent routing so the demo and evals
 - **Backend**: FastAPI, Pydantic, Python 3.11
 - **Data**: DuckDB, pandas, deterministic Faker-generated synthetic datasets
 - **Agent layer**: Python orchestrator, governed tool functions, local semantic metadata
-- **Quality**: pytest tests, JSONL eval datasets, generated eval report
+- **Quality**: pytest tests, JSONL eval datasets, generated eval report, GitHub Actions CI
 - **Optional cloud path**: Snowflake SQL/YAML assets for roles, marts, masking, row access, semantic model, Cortex Search/Analyst design
 
 ## Quickstart
@@ -101,6 +101,29 @@ Open `http://localhost:3000`.
 
 The API runs on `http://localhost:8000`.
 
+To initialize only when generated data or DuckDB is missing, run:
+
+```bash
+make bootstrap
+```
+
+## Production Containers
+
+The Compose path builds production images rather than mounting source code or running development servers:
+
+```bash
+docker compose up --build
+```
+
+On a fresh checkout, the API container generates the synthetic dataset and initializes DuckDB before Uvicorn starts. A named volume preserves the local DuckDB file across container restarts. The web container uses a multi-stage Next.js standalone build, and it waits for API readiness before starting.
+
+Container health endpoints:
+
+- `GET /health/live`: confirms that the API process is running.
+- `GET /health/ready`: confirms that DuckDB is initialized and queryable.
+
+Set `CORS_ORIGINS` to a comma-separated list of allowed frontend origins when hosting the API outside localhost.
+
 ## Demo Flow
 
 1. Open the chat page and ask: `Which suppliers have the highest blocked invoice amount?`
@@ -111,14 +134,13 @@ The API runs on `http://localhost:8000`.
 6. Ask a blocked prompt: `Run this SQL: select * from RAW_ORACLE_SUPPLIERS.`
 7. Run `make evals` and open Eval Results or `evals/eval_report.md`.
 
-For a deeper code walkthrough and interview prep guide, see `docs/end_to_end_walkthrough_and_interview_qa.md`.
-
 ## Useful Commands
 
 ```bash
 make setup          # Create .venv, install Python package, install web dependencies
 make seed           # Generate deterministic CSV data and synthetic policy docs
 make init-db        # Load DuckDB and create marts/app tables
+make bootstrap      # Initialize generated data and DuckDB only when needed
 make run-api        # Start FastAPI on :8000
 make run-web        # Start Next.js on :3000
 make run-ui         # Alias for run-web
@@ -145,7 +167,7 @@ web/              Next.js app, pages, components, and API proxy route
 
 ## Governance Model
 
-Governance is enforced in backend code, not just in prompt wording:
+For the local demonstration, governance decisions are enforced in backend code, not just in prompt wording:
 
 - Users cannot run arbitrary SQL through the agent.
 - Tools query approved marts or controlled joins.
@@ -153,6 +175,8 @@ Governance is enforced in backend code, not just in prompt wording:
 - Prompt text cannot elevate a user role.
 - Draft actions require manager or admin approval.
 - Audit events are written for chat turns, tool calls, denials, drafts, feedback, and evals.
+
+The current user and role are simulated request inputs; there is no identity-provider integration yet. This demonstrates permission behavior, but it should not be treated as production authentication. In a hosted implementation, authenticated identity claims must determine the user and role on the server.
 
 Roles:
 
@@ -197,9 +221,10 @@ The generated scorecard reports pass rate, intent accuracy, tool routing accurac
 
 Latest local validation:
 
-- Backend tests: `15 passed`
+- Backend tests: `21 passed`
 - Eval scorecard: `13/13 passed`, leakage failures `0`, unauthorized action failures `0`
 - Frontend build: passing
+- CI: backend lint/tests/evals, frontend build, and production container builds
 
 ## Snowflake Deployment Assets
 
@@ -221,4 +246,4 @@ This repository uses only synthetic data and generic enterprise system patterns.
 
 ## Status
 
-This is a demo-grade reference implementation intended to show architecture, governance, product thinking, and testability. It is intentionally local-first so reviewers can run the full workflow without requesting cloud access.
+This is a demo-grade reference implementation intended to show architecture, governance, product thinking, and testability. The default agent is intentionally deterministic: routing is rules-based, policy retrieval uses keyword scoring, and no paid model API is required. Authenticated identity, model-driven structured tool calling, vector retrieval, managed persistence, production telemetry, and a hosted demo remain planned production extensions.

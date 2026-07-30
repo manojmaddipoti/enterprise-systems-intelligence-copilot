@@ -1,4 +1,4 @@
-.PHONY: setup seed init-db run-api run-web run-ui test evals docker-build docker-run
+.PHONY: setup seed init-db bootstrap run-api run-web run-ui test evals docker-build docker-run
 
 setup:
 	python3 -m venv .venv
@@ -11,6 +11,9 @@ seed:
 
 init-db:
 	.venv/bin/python -m db.duckdb.init_db
+
+bootstrap:
+	.venv/bin/python -m app.bootstrap
 
 run-api:
 	.venv/bin/uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
