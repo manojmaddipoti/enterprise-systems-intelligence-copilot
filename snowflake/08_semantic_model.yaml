@@ -1,5 +1,55 @@
 name: enterprise_systems_intelligence
+description: Semantic model for synthetic procurement, AP, supplier, approval, and workflow health analytics.
 tables:
+  - name: suppliers
+    base_table:
+      database: ENTERPRISE_COPILOT_DEV
+      schema: MARTS
+      table: MART_SUPPLIER_360
+    primary_key:
+      columns:
+        - enterprise_supplier_id
+    dimensions:
+      - name: supplier_name
+        expr: supplier_name
+      - name: region
+        expr: region
+      - name: supplier_tier
+        expr: supplier_tier
+      - name: payment_terms
+        expr: payment_terms
+    measures:
+      - name: total_po_amount
+        expr: total_po_amount
+        default_aggregation: sum
+      - name: open_invoice_amount
+        expr: open_invoice_amount
+        default_aggregation: sum
+      - name: exception_count
+        expr: exception_count
+        default_aggregation: sum
+      - name: risk_score
+        expr: risk_score
+        default_aggregation: avg
+
+  - name: purchase_orders
+    base_table:
+      database: ENTERPRISE_COPILOT_DEV
+      schema: MARTS
+      table: MART_PROCUREMENT_SPEND
+    dimensions:
+      - name: business_unit
+        expr: business_unit
+      - name: commodity
+        expr: commodity
+    measures:
+      - name: total_spend
+        expr: total_po_amount
+        default_aggregation: sum
+      - name: purchase_order_count
+        expr: purchase_order_count
+        default_aggregation: sum
+
   - name: invoices
     base_table:
       database: ENTERPRISE_COPILOT_DEV
@@ -12,10 +62,93 @@ tables:
         expr: business_unit
       - name: exception_type
         expr: exception_type
+      - name: exception_reason
+        expr: exception_reason
+      - name: approval_status
+        expr: approval_status
     measures:
       - name: blocked_invoice_amount
-        expr: open_amount
+        expr: blocked_invoice_amount
         default_aggregation: sum
-      - name: exception_count
+      - name: blocked_invoice_count
         expr: exception_id
         default_aggregation: count
+
+  - name: receipts
+    base_table:
+      database: ENTERPRISE_COPILOT_DEV
+      schema: MARTS
+      table: MART_PO_INVOICE_MATCHING
+    dimensions:
+      - name: supplier_name
+        expr: supplier_name
+      - name: business_unit
+        expr: business_unit
+    measures:
+      - name: match_rate
+        expr: IFF(three_way_match_passed, 1, 0)
+        default_aggregation: avg
+
+  - name: approvals
+    base_table:
+      database: ENTERPRISE_COPILOT_DEV
+      schema: MARTS
+      table: MART_APPROVAL_BOTTLENECKS
+    dimensions:
+      - name: business_unit
+        expr: business_unit
+      - name: approver_role
+        expr: approver_role
+    measures:
+      - name: avg_approval_cycle_time
+        expr: avg_cycle_time_hours
+        default_aggregation: avg
+      - name: overdue_count
+        expr: overdue_count
+        default_aggregation: sum
+
+  - name: payments
+    base_table:
+      database: ENTERPRISE_COPILOT_DEV
+      schema: MARTS
+      table: MART_PAYMENT_STATUS
+    dimensions:
+      - name: supplier_name
+        expr: supplier_name
+      - name: business_unit
+        expr: business_unit
+      - name: payment_status
+        expr: payment_status
+    measures:
+      - name: overdue_invoice_amount
+        expr: IFF(is_overdue, open_amount, 0)
+        default_aggregation: sum
+
+  - name: workflow_health
+    base_table:
+      database: ENTERPRISE_COPILOT_DEV
+      schema: MARTS
+      table: MART_ENTERPRISE_WORKFLOW_HEALTH
+    dimensions:
+      - name: business_unit
+        expr: business_unit
+      - name: period
+        expr: period
+    measures:
+      - name: workflow_health_score
+        expr: workflow_health_score
+        default_aggregation: avg
+      - name: open_invoice_amount
+        expr: open_invoice_amount
+        default_aggregation: sum
+      - name: match_rate
+        expr: match_rate
+        default_aggregation: avg
+
+relationships:
+  - name: workflow_to_approvals
+    left_table: workflow_health
+    right_table: approvals
+    relationship_columns:
+      - left_column: business_unit
+        right_column: business_unit

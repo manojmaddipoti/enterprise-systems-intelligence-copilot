@@ -1,1 +1,1 @@
-{"id":"mixed_001","input":"Which blocked invoices violate the synthetic three-way match policy?","expected_intent":"policy_lookup","expected_tools":["search_policy_documents"],"must_contain":["policy"],"must_not_contain":["bank_account_number"]}
+{"id":"mixed_001","input":"Which blocked invoices violate the synthetic three-way match policy?","expected_intent":"mixed_data_policy","expected_tools":["query_invoice_exceptions","search_policy_documents"],"must_contain":["blocked","policy","three-way"],"must_not_contain":["bank_account_number"]}

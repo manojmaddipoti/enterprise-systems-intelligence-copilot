@@ -49,11 +49,15 @@ export async function POST(req: Request) {
   }
 
   const data = await response.json();
+  const citations = (data.citations || [])
+    .map((citation: { source?: string; reference?: string }) => `${citation.source}: ${citation.reference}`)
+    .join(', ');
   const text = [
     data.answer,
     '',
     `Intent: ${data.intent}`,
     `Tools: ${(data.tools_called || []).join(', ') || 'none'}`,
+    citations ? `Citations: ${citations}` : '',
     `Requires approval: ${data.requires_approval ? 'yes' : 'no'}`,
     data.draft_id ? `Draft: ${data.draft_id}` : '',
     `Trace: ${data.trace_id}`,

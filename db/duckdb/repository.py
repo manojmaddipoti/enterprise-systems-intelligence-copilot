@@ -93,6 +93,10 @@ class Repository:
         )
         return rows[0]
 
+    def user_role_count(self) -> int:
+        rows = self._rows("SELECT COUNT(*) AS role_count FROM APP_USER_ROLES", [])
+        return rows[0]["role_count"]
+
     def coupa_not_oracle_suppliers(self, limit: int = 10) -> list[dict[str, Any]]:
         return self._rows(
             """
@@ -109,7 +113,12 @@ class Repository:
     def coupa_po_missing_oracle_invoice(self, limit: int = 10) -> list[dict[str, Any]]:
         return self._rows(
             """
-            SELECT p.po_number, p.coupa_supplier_id, p.business_unit, p.po_amount, p.approved_at
+            SELECT
+              p.po_number,
+              p.coupa_supplier_id,
+              p.business_unit,
+              p.po_amount,
+              CAST(p.approved_at AS VARCHAR) AS approved_at
             FROM RAW_COUPA_PURCHASE_ORDERS p
             LEFT JOIN RAW_ORACLE_AP_INVOICES i ON p.po_number = i.po_number
             WHERE p.status = 'APPROVED' AND i.invoice_id IS NULL

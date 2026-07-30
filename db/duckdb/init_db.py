@@ -29,6 +29,13 @@ def init_db() -> None:
 
     con.execute(
         """
+        CREATE OR REPLACE TABLE APP_USER_ROLES AS
+        SELECT user_id, role, business_unit
+        FROM APP_USERS
+        """
+    )
+    con.execute(
+        """
         CREATE TABLE IF NOT EXISTS APP_DRAFT_ACTIONS (
           draft_id VARCHAR PRIMARY KEY,
           draft_type VARCHAR,

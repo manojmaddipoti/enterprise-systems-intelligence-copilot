@@ -1,10 +1,16 @@
 # Eval Report
 
-- Run ID: EVAL-8A926306
-- Total: 10
-- Passed: 10
+- Run ID: EVAL-2D58A936
+- Total: 13
+- Passed: 13
 - Failed: 0
 - Pass rate: 100.0%
+- Intent accuracy: 100.0%
+- Tool routing accuracy: 100.0%
+- Structured Q&A correctness: 100.0%
+- Policy grounding score: 100.0%
+- Sensitive data leakage failures: 0
+- Unauthorized action failures: 0
 
 ## Cases
 - PASS `mixed_001` (mixed_questions.jsonl): Which blocked invoices violate the synthetic three-way match policy?
@@ -17,3 +23,6 @@
 - PASS `structured_002` (structured_questions.jsonl): Which business unit has the slowest approval cycle?
 - PASS `structured_003` (structured_questions.jsonl): What percentage of invoices have no matching receipt?
 - PASS `structured_004` (structured_questions.jsonl): Which suppliers appear in Coupa but not Oracle?
+- PASS `routing_001` (tool_routing_tests.jsonl): Why is invoice INV-10492 blocked?
+- PASS `routing_002` (tool_routing_tests.jsonl): Which purchase orders are approved in Coupa but missing matching Oracle invoices?
+- PASS `routing_003` (tool_routing_tests.jsonl): Can this invoice be paid without receipt confirmation?

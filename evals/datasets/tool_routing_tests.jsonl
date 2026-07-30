@@ -1,0 +1,3 @@
+{"id":"routing_001","input":"Why is invoice INV-10492 blocked?","expected_intent":"structured_data","expected_tools":["query_invoice_exceptions"],"must_contain":["invoice"],"must_not_contain":["bank_account_number"]}
+{"id":"routing_002","input":"Which purchase orders are approved in Coupa but missing matching Oracle invoices?","expected_intent":"structured_data","expected_tools":["query_po_invoice_matching"],"must_contain":["Approved Coupa POs"],"must_not_contain":["tax_id"]}
+{"id":"routing_003","input":"Can this invoice be paid without receipt confirmation?","expected_intent":"policy_lookup","expected_tools":["search_policy_documents"],"must_contain":["receipt"],"must_not_contain":["bank_account_number"]}

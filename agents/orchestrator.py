@@ -50,7 +50,43 @@ class Orchestrator:
                 trace_id=trace_id,
             )
 
-        if "draft" in lower or "escalation" in lower:
+        if (
+            ("blocked invoice" in lower or "blocked invoices" in lower or "invoice" in lower)
+            and ("three-way" in lower or "policy" in lower)
+            and ("violate" in lower or "match" in lower)
+        ):
+            intent = "mixed_data_policy"
+            tools_called.extend(["query_invoice_exceptions", "search_policy_documents"])
+            rows = self.tools.query_invoice_exceptions(request.role)
+            matches = self.tools.search_policy_documents(message)
+            citations.extend(
+                [
+                    Citation(source="mart", reference="MART_INVOICE_EXCEPTIONS"),
+                    *[
+                        Citation(
+                            source="policy_document",
+                            reference=match["source"],
+                            metadata={"score": match["score"]},
+                        )
+                        for match in matches
+                    ],
+                ]
+            )
+            answer = (
+                "Blocked invoices should be reviewed against the synthetic three-way match policy. "
+                "The current top blocked invoice patterns are:\n"
+                f"{self._format_table_answer('Blocked invoice exposure', rows)}\n\n"
+                f"{self._format_policy_answer(message, matches)}"
+            )
+            self._audit(
+                trace_id,
+                request,
+                intent,
+                "query_invoice_exceptions,search_policy_documents",
+                {"invoice_rows": len(rows), "policy_matches": len(matches)},
+            )
+
+        elif "draft" in lower or "escalation" in lower:
             intent = "action_drafting"
             tools_called.append("create_draft_action")
             if not can_draft(request.role):

@@ -1,4 +1,4 @@
-.PHONY: setup seed init-db run-api run-web test evals docker-build docker-run
+.PHONY: setup seed init-db run-api run-web run-ui test evals docker-build docker-run
 
 setup:
 	python3 -m venv .venv
@@ -17,6 +17,8 @@ run-api:
 
 run-web:
 	cd web && npm run dev
+
+run-ui: run-web
 
 test:
 	.venv/bin/pytest

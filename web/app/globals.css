@@ -119,6 +119,11 @@ textarea {
   padding: 16px;
 }
 
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
 .metric {
   min-height: 104px;
 }
@@ -235,6 +240,33 @@ th {
   cursor: not-allowed;
 }
 
+.row-actions {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.icon-button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--green);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button.danger {
+  color: var(--red);
+}
+
+.icon-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
 .status {
   display: inline-flex;
   min-height: 24px;
@@ -260,6 +292,32 @@ th {
 .status.bad {
   background: #fee2e2;
   color: var(--red);
+}
+
+.bar-list {
+  display: grid;
+  gap: 12px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(120px, 2fr) 48px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.bar-track {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--green);
 }
 
 @media (max-width: 920px) {
