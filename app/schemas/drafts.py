@@ -3,7 +3,6 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-
 DraftStatus = Literal["PENDING_APPROVAL", "APPROVED", "REJECTED"]
 
 
