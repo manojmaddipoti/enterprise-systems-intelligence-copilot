@@ -3,6 +3,8 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
+import duckdb
+
 from app.core.config import get_settings
 from data.seed.generate_data import generate
 from db.duckdb.init_db import RAW_DIR, init_db
@@ -35,7 +37,7 @@ def _database_is_ready(db_path: Path) -> bool:
         return False
     try:
         health = Repository(str(db_path)).health()
-    except Exception:
+    except (RuntimeError, duckdb.Error):
         return False
     return health.get("status") == "ok"
 

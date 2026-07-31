@@ -2,7 +2,6 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
-
 RoleLiteral = Literal["APP_ANALYST", "APP_MANAGER", "APP_ADMIN", "APP_AUDITOR"]
 
 
